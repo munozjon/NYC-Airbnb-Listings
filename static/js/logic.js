@@ -15,11 +15,12 @@
     
 
     // Load GeoJSON data and add it to the map
-        map.addSource('neighborhoods', {
+       map.addSource('neighborhoods', {
             type: 'geojson',
-            data: 'static/data/neighborhoods.geojson' // Path to your GeoJSON file
-        });
+           data: 'static/data/neighborhoods.geojson' // Path to your GeoJSON file
+       });
 
+      
     // Add a layer to display the neighborhoods
         map.addLayer({
             'id': 'neighborhoods-layer',
@@ -28,7 +29,7 @@
             'layout': {},
             'paint': {
             'fill-color': '#888888',
-            'fill-opacity': 0.4
+            'fill-opacity': 0.4,
          }
         });
 
