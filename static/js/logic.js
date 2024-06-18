@@ -17,21 +17,13 @@
     neighborhoods = "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson"
 
 
-    // Load GeoJSON data and add it to the map
-    //    map.addSource('neighborhoods', {
-    //         type: 'geojson',
-    //        data: geojson // Path to your GeoJSON file
-    //    });
-
+    //Load GeoJSON data and add it to the map
        map.addSource('neighborhoods', {
             type: 'geojson',
-<<<<<<< HEAD
            data: neighborhoods // Path to your GeoJSON file
        });
-=======
-            data: "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson" 
-        });
->>>>>>> 96103cbab2e7a1ee427350695df228e20109e34e
+
+
 
       
     // Add a layer to display the neighborhoods
