@@ -1,4 +1,4 @@
-	mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM2pkYnp0In0.HTQaiKsTNpDofxvQJwjvXg';
+mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM2pkYnp0In0.HTQaiKsTNpDofxvQJwjvXg';
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/streets-v9',
@@ -13,9 +13,7 @@
 
     map.on('style.load', () => {
         map.setFog({}); // Set the default atmosphere style
-     
-    neighborhoods = "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson"
-
+    
 
     // Load GeoJSON data and add it to the map
     //    map.addSource('neighborhoods', {
@@ -25,15 +23,19 @@
 
        map.addSource('neighborhoods', {
             type: 'geojson',
-<<<<<<< HEAD
-           data: neighborhoods // Path to your GeoJSON file
-       });
-=======
             data: "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson" 
         });
->>>>>>> 96103cbab2e7a1ee427350695df228e20109e34e
 
       
+    //colors for each neighbourhood_group
+        const colors = {
+            'Bronx': '#ff0000',        // Red for Bronx
+            'Brooklyn': '#00ff00',     // Green for Brooklyn
+            'Manhattan': '#0000ff',    // Blue for Manhattan
+            'Queens': '#ffff00',       // Yellow for Queens
+            'Staten Island': '#ff00ff' // Purple for Staten Island
+        };     
+
     // Add a layer to display the neighborhoods
         map.addLayer({
             'id': 'neighborhoods-layer',
@@ -41,8 +43,16 @@
             'source': 'neighborhoods',
             'layout': {},
             'paint': {
-            'fill-color': '#888888',
-            'fill-opacity': 0.25,
+                'fill-color': [
+                    'match', ['get', 'neighbourhood_group'], 
+                    'Bronx', colors['Bronx'],       // Color for Bronx
+                    'Brooklyn', colors['Brooklyn'], // Color for Brooklyn
+                    'Manhattan', colors['Manhattan'], // Color for Manhattan
+                    'Queens', colors['Queens'],     // Color for Queens
+                    'Staten Island', colors['Staten Island'], // Color for Staten Island
+                    '#808080'  // Default color if no match (gray)
+                ],
+                'fill-opacity': 0.25
          }
         });
 
@@ -59,6 +69,8 @@
         });
 
     });
+
+
         
     const boroughs = {   // Boxes for each borough
             'Manhattan': [[-74.0479, 40.6829], [-73.9067, 40.8820]],
@@ -75,4 +87,3 @@
                 });
             }
         }
-        
