@@ -15,18 +15,27 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM
         map.setFog({}); // Set the default atmosphere style
     
 
-    //Load GeoJSON data and add it to the map
+    // Load GeoJSON data and add it to the map
+    //    map.addSource('neighborhoods', {
+    //         type: 'geojson',
+    //        data: geojson // Path to your GeoJSON file
+    //    });
+
        map.addSource('neighborhoods', {
             type: 'geojson',
-<<<<<<< HEAD
-           data: neighborhoods // Path to your GeoJSON file
-       });
-=======
             data: "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson" 
         });
->>>>>>> 96103cbab2e7a1ee427350695df228e20109e34e
 
       
+    //colors for each neighbourhood_group
+        const colors = {
+            'Bronx': '#ff0000',        // Red for Bronx
+            'Brooklyn': '#00ff00',     // Green for Brooklyn
+            'Manhattan': '#0000ff',    // Blue for Manhattan
+            'Queens': '#ffff00',       // Yellow for Queens
+            'Staten Island': '#ff00ff' // Purple for Staten Island
+        };     
+
     // Add a layer to display the neighborhoods
         map.addLayer({
             'id': 'neighborhoods-layer',
