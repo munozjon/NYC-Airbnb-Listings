@@ -12,12 +12,14 @@
 
     map.on('style.load', () => {
         map.setFog({}); // Set the default atmosphere style
-    
+     
+    neighborhoods = "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson"
+
 
     // Load GeoJSON data and add it to the map
        map.addSource('neighborhoods', {
             type: 'geojson',
-           data: 'static/data/neighborhoods.geojson' // Path to your GeoJSON file
+           data: neighborhoods // Path to your GeoJSON file
        });
 
       
