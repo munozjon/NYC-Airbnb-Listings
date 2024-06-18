@@ -10,15 +10,21 @@
     map.addControl(new mapboxgl.NavigationControl());
     map.scrollZoom.disable();
 
+
     map.on('style.load', () => {
         map.setFog({}); // Set the default atmosphere style
     
 
     // Load GeoJSON data and add it to the map
+    //    map.addSource('neighborhoods', {
+    //         type: 'geojson',
+    //        data: geojson // Path to your GeoJSON file
+    //    });
+
        map.addSource('neighborhoods', {
             type: 'geojson',
-           data: 'static/data/neighborhoods.geojson' // Path to your GeoJSON file
-       });
+            data: "https://data.insideairbnb.com/united-states/ny/new-york-city/2023-12-04/visualisations/neighbourhoods.geojson" 
+        });
 
       
     // Add a layer to display the neighborhoods
@@ -29,7 +35,7 @@
             'layout': {},
             'paint': {
             'fill-color': '#888888',
-            'fill-opacity': 0.4,
+            'fill-opacity': 0.25,
          }
         });
 
@@ -41,7 +47,7 @@
             'layout': {},
             'paint': {
             'line-color': '#000000',
-            'line-width': 2
+            'line-width': 1
             }
         });
 
