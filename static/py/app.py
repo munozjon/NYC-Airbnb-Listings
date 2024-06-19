@@ -45,7 +45,28 @@ combined_df = combined_df.rename(columns={'neighbourhood_group_cleansed': 'Borou
 # Convert to JSON object
 results_agg_df = combined_df.to_json(orient="records")
 
+# Number of selected amenities per neighbourhood: 
+keywords = ["Wifi", "Kitchen", "Air conditioning", "Backyard", "Pets allowed", "Washer", "Dryer", "Long term stays allowed", "Elevator", "Dedicated workspace"]
 
+def amenities_by_nbhd(df, keywords):
+
+    # Explode the amenities column:
+    
+    listings_exploded = reduced_listings.explode('amenities').copy()
+    
+    # Count the occurrences of each keyword in the amenities column by neighborhood
+
+    listings_exploded["amenities"] = listings_exploded["amenities"].apply(lambda x : x.lower() if type(x)==str else x) 
+    keywords = [x.lower() for x in keywords]
+    listings_exploded = listings_exploded[listings_exploded["amenities"].isin(keywords)].reset_index(drop=1)
+    listings_exploded = listings_exploded.groupby(["neighbourhood_cleansed", "neighbourhood_group_cleansed", "amenities"]).size().reset_index(name='count')
+    listings_exploded = listings_exploded.rename(columns={'neighbourhood_group_cleansed':'Borough', 'neighbourhood_cleansed':'Neighbourhood'})
+    return listings_exploded
+
+amenities_per_nbhd = amenities_by_nbhd(reduced_listings,keywords)
+
+#Convert to json object:
+amenities_nbhd = amenities_per_nbhd.to_json(orient="records")
 
 # Establish Flask connection
 app = Flask(__name__)
@@ -60,6 +81,11 @@ def get_cleaned_df():
 @app.route('/aggregates', methods=['GET'])
 def get_aggregates():
     return jsonify(results_agg_df)
+
+# Set endpoint for JSON of aggregate Ameninities object:
+@app.route('/amenities', methods=['GET'])
+def get_amenities(): 
+    return jsonify(amenities_nbhd)
 
 if __name__ == '__main__':
     app.run(debug=True)
