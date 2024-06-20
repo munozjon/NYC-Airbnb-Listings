@@ -116,6 +116,36 @@ map.on('style.load', () => {
 
 });
 
+// Fetch data from your API endpoint
+fetch('http://127.0.0.1:5000/cleaned_listings')
+    .then(response => response.json())
+    .then(data => {
+        console.log('Fetched data:', data);
+        
+            // Loop through each listing in the fetched data
+            const markers = Math.min(data.length, 5000);
+            for (let i = 0; i < markers; i++) {
+                const listing = data[i];
+                const latitude = parseFloat(listing.latitude);
+                const longitude = parseFloat(listing.longitude);
+
+                const popupContent = `
+                    <b>${listing.name}</b><br>
+                    Type: ${listing.room_type}<br>
+                    Price: ${listing.price}
+                `;
+
+                new mapboxgl.Marker()
+                    .setLngLat([longitude, latitude])
+                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
+                    .addTo(map);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+
 
     
 const boroughBoxes = {   // Boxes for each borough
