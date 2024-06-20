@@ -51,6 +51,58 @@ function buildCharts(borough) {
     });
 };
 
+function buildBar(borough){ 
+    d3.json("http://127.0.0.1:5000/amenities").then((data) => {
+    
+        let parsedAmData = JSON.parse(data);
+
+        //Filter data for chosen borough:
+        let filteredAmData = parsedAmData.filter(results => results.Borough == borough); 
+
+        function calculateRoomTypeCounts(data) {
+            const neighbourhoodCounts = {};
+        
+            data.forEach(document => {
+                const neighbourhood = document["Neighbourhood"];
+            
+                if (neighbourhoodCounts[neighbourhood]) {
+                    neighbourhoodCounts[neighbourhood] += document.count;
+                }
+                else {
+                    neighbourhoodCounts[neighbourhood] = document.count;
+                }
+            });
+          
+            return neighbourhoodCounts;
+        };
+          
+        const roomTypeCounts = calculateRoomTypeCounts(filteredAmData);
+
+        let labels = Object.keys(roomTypeCounts);
+        let values = Object.values(roomTypeCounts);
+
+        const barTrace = { 
+                type: "bar", 
+                x: labels,
+                y: values,
+                marker:{ 
+                    color: 'blue' 
+                }
+
+        }
+
+        const bar_data = [barTrace];
+
+        const barLayout = { 
+            title : "Popular Amenities per Nbhd", 
+            barcornerradius: 15
+
+        };
+
+        Plotly.newPlot('bar', bar_data, barLayout)
+
+})};
+
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM2pkYnp0In0.HTQaiKsTNpDofxvQJwjvXg';
 const map = new mapboxgl.Map({
@@ -135,20 +187,12 @@ function changeBorough(borough) {
     });
 
     buildCharts(borough);
+    buildBar(borough);
 };
 
 // Run on page load
 function init() {
-
-    d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
-
-        let parsedData = JSON.parse(data);
-
-        let firstBorough = parsedData[0]["Borough"];
-
-        changeBorough(firstBorough);
-
-   });
+    changeBorough("Manhattan");
 };
 
 init();
