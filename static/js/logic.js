@@ -300,4 +300,11 @@ function init() {
     changeBorough("Manhattan", "First");
 };
 
+map.addControl(
+    new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+    }),
+    'top-left'
+);
+
 init();
