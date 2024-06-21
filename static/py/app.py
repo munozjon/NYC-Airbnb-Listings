@@ -46,7 +46,7 @@ combined_df = combined_df.rename(columns={'neighbourhood_group_cleansed': 'Borou
 results_agg_df = combined_df.to_json(orient="records")
 
 # Number of selected amenities per neighbourhood: 
-keywords = ["Wifi", "Kitchen", "Air conditioning", "Backyard", "Pets allowed", "Washer", "Dryer", "Long term stays allowed", "Elevator", "Dedicated workspace"]
+keywords = ["Wifi", "Kitchen", "Air conditioning", "Backyard", "Pets allowed", "Washer", "Dryer", "Dedicated workspace"]
 
 def amenities_by_nbhd(df, keywords):
 

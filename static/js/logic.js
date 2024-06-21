@@ -61,50 +61,52 @@ function buildBar(borough){
 
         //Filter data for chosen borough:
         let filteredAmData = parsedAmData.filter(results => results.Borough == borough); 
-
-        function calculateRoomTypeCounts(data) {
-            const neighbourhoodCounts = {};
         
-            data.forEach(document => {
+        const neighbourhoodCounts = {};
+        
+        filteredAmData.forEach(document => {
                 const neighbourhood = document["Neighbourhood"];
+                const amenity = document["amenities"];
+                const count = document["count"];
+                //
+                if (!neighbourhoodCounts[neighbourhood]) {
+                    neighbourhoodCounts[neighbourhood] = {};
+                }
+                if (neighbourhoodCounts[neighbourhood][amenity]){
+                    neighbourhoodCounts[neighbourhood][amenity] += count;
+                } else {
+                    neighbourhoodCounts[neighbourhood][amenity] = count;
+                }
+                }
+             );
+          
             
-                if (neighbourhoodCounts[neighbourhood]) {
-                    neighbourhoodCounts[neighbourhood] += document.count;
-                }
-                else {
-                    neighbourhoodCounts[neighbourhood] = document.count;
-                }
-            });
-          
-            return neighbourhoodCounts;
-        };
-          
-        const roomTypeCounts = calculateRoomTypeCounts(filteredAmData);
+        const neighbourhoods = Object.keys(neighbourhoodCounts)
 
-        let labels = Object.keys(roomTypeCounts);
-        let values = Object.values(roomTypeCounts);
+        //setting up an array to iterate and create traces for each amenity
+        // ...new Set removes duplicates from the array (Set does not contain duplicates) and consolidate amenity numbers
+        const amenities = [...new Set(filteredAmData.map(item => item.amenities))];
 
-        const barTrace = { 
-                type: "bar", 
-                x: labels,
-                y: values,
-                marker:{ 
-                    color: 'blue' 
-                }
+        const traces = amenities.map(amenity => {
+            return {
+                x: neighbourhoods,
+                //incase of 0 values for amenity counts
+                y: neighbourhoods.map(neighbourhood => neighbourhoodCounts[neighbourhood][amenity] || 0),
+                name: amenity,
+                type: 'bar'
+            };  
+        });
 
-        }
-
-        const bar_data = [barTrace];
-
-        const barLayout = { 
-            title : "Popular Amenities per Nbhd", 
-            barcornerradius: 15
-
+        const layout = { 
+            title: "Popular Neighbourhood Amenities", 
+            barmode: 'stack',
+            yaxis: {title: 'Count'}
         };
 
-        const barConfig = {responsive: true}
+        const barConfig = {responsive: true};
 
-        Plotly.newPlot('bar', bar_data, barLayout, barConfig);
+
+        Plotly.newPlot('bar', traces, layout, barConfig);
 
 })};
 
