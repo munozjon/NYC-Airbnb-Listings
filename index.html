@@ -9,64 +9,63 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
- <!-- Our CSS -->
- <link rel="stylesheet" type="text/css" href="static/css/style.css">
+    <!-- Our CSS -->
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
 </head>
+
 <body>
-  <!-- The div that holds our plots -->
-<div id="sidebar">
-    <div class="row">
-      <div class="col-md-12 p-5 text-center bg-light">
-        <h1>Zoom to Borough</h1>
-        <p>Dataset from December 4, 2023</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-3">
-        <div class="card bg-light">
-          <h2>Borough:</h2>
-          <div class="prev_value" value="Manhattan"></div>
-          <button onclick="changeBorough('Manhattan', '')">Manhattan</button>
-          <button onclick="changeBorough('Brooklyn', '')">Brooklyn</button>
-          <button onclick="changeBorough('Queens', '')">Queens</button>
-          <button onclick="changeBorough('Bronx', '')">Bronx</button>
-          <button onclick="changeBorough('Staten Island', '')">Staten Island</button>
-          </div>
-        <br>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div id="pie"></div>
-      </div>
-      <br>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div id="scatter"></div>
-      </div>
-      <br>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div id="box"></div>
-      </div>
-      <br>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <div id="bar"></div>
-      </div>
-    </div>
-</div>
-  <!-- The div that holds our map -->
-<div id="map"></div>
+    <div class="main-container">
+        <!-- The div that holds the sidebar -->
+        <div id="sidebar">
+            <div class="card bg-light">
+                <h2>Zoom to Borough</h2>
+                <p>Dataset from December 4, 2023</p>
+                <div class="prev_value" value="Manhattan"></div>
+                <button onclick="changeBorough('Manhattan', '')">Manhattan</button>
+                <button onclick="changeBorough('Brooklyn', '')">Brooklyn</button>
+                <button onclick="changeBorough('Queens', '')">Queens</button>
+                <button onclick="changeBorough('Bronx', '')">Bronx</button>
+                <button onclick="changeBorough('Staten Island', '')">Staten Island</button>
+            </div>
+        </div>
 
-  <!-- Link to Mapbox API -->
-<script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
-<link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
+        <!-- The div that holds the map -->
+        <div id="map"></div>
+    </div>
 
-<!-- Our JavaScript file -->
-<script type="text/javascript" src="static/js/logic.js"></script>
+    <!-- The div that holds our plots -->
+    <div id="graphs">
+        <div class="row">
+            <div class="col-md-12">
+
+
+                <div id="pie"></div>
+            </div>
+            <br>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="scatter"></div>
+            </div>
+            <br>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="box"></div>
+            </div>
+            <br>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div id="bar"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Link to Mapbox API -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
+
+    <!-- Our JavaScript file -->
+    <script type="text/javascript" src="static/js/logic.js"></script>
 </body>
 </html>
