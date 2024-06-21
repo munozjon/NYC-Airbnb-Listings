@@ -45,11 +45,54 @@ function buildCharts(borough) {
             title: "% of rooms per Room Type",
             margin: {"t": 50, "b": 0, "l": 0, "r": 0}
           };
+
         
         var config = {responsive: true};
 
         Plotly.newPlot('pie', trace1, layout, config);
 
+              // Retrieve chart data
+              let boxPlotData = filteredData.reduce((name, item) => {
+                if (!name[item["Room Type"]]) {
+                    name[item["Room Type"]] = [];
+                }
+                name[item["Room Type"]].push(item["Average Price"]);
+                return name
+            }, {})
+    
+            console.log(boxPlotData)
+    
+    
+            // Initiate chart data
+    
+            let entireHomeTrace = {
+                y: boxPlotData["Entire home/apt"],
+                type: "box",
+                name: "Entire Home"
+    
+            }
+            let hotelRoomTrace = {
+                y: boxPlotData["Hotel room"],
+                type: "box",
+                name: "Hotel Room"
+            }
+            let privateRoomTrace = {
+                y: boxPlotData["Private room"],
+                type: "box",
+                name: "Private Room"
+            }
+            let sharedRoomTrace = {
+                y: boxPlotData["Shared room"],
+                type: "box",
+                name: "Shared Room"
+            }
+            let all_data = [entireHomeTrace, hotelRoomTrace, privateRoomTrace, sharedRoomTrace]
+    
+            const priceLayout = {
+                title: "Average Prices by Borough"
+            };
+
+                    Plotly.newPlot('box', all_data, priceLayout);
     });
 };
 
