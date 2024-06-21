@@ -45,12 +45,15 @@ function buildCharts(borough) {
             title: "% of rooms per Room Type",
             margin: {"t": 50, "b": 0, "l": 0, "r": 0}
           };
+        
+        var config = {responsive: true};
 
-        Plotly.newPlot('pie', trace1, layout);
+        Plotly.newPlot('pie', trace1, layout, config);
 
     });
 };
 
+// Create bar graph
 function buildBar(borough){ 
     d3.json("http://127.0.0.1:5000/amenities").then((data) => {
     
@@ -99,11 +102,13 @@ function buildBar(borough){
 
         };
 
-        Plotly.newPlot('bar', bar_data, barLayout)
+        const barConfig = {responsive: true}
+
+        Plotly.newPlot('bar', bar_data, barLayout, barConfig);
 
 })};
 
-
+// Initialize the map
 mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM2pkYnp0In0.HTQaiKsTNpDofxvQJwjvXg';
 const map = new mapboxgl.Map({
     container: 'map',
@@ -113,6 +118,7 @@ const map = new mapboxgl.Map({
     center: [-73.96, 40.78] // starting position [lng, lat]
 });
 
+// Add map controls
 map.addControl(new mapboxgl.NavigationControl());
 map.scrollZoom.disable();
 
@@ -168,35 +174,88 @@ map.on('style.load', () => {
 
 });
 
-// Fetch data from your API endpoint
-fetch('http://127.0.0.1:5000/cleaned_listings')
-    .then(response => response.json())
-    .then(data => {
-        console.log('Fetched data:', data);
-        
-            // Loop through each listing in the fetched data
-            const markers = Math.min(data.length, 5000);
-            for (let i = 0; i < markers; i++) {
-                const listing = data[i];
-                const latitude = parseFloat(listing.latitude);
-                const longitude = parseFloat(listing.longitude);
+// Add markers for each borough
+function buildLayer (data, borough, map){
+    let filteredData = data.filter(results => results.neighbourhood_group_cleansed == borough);
+    let dataArr = []
 
-                const popupContent = `
-                    <b>${listing.name}</b><br>
-                    Type: ${listing.room_type}<br>
-                    Price: ${listing.price}
-                `;
-
-                new mapboxgl.Marker()
-                    .setLngLat([longitude, latitude])
-                    .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(popupContent))
-                    .addTo(map);
+    // Create Feature data for geoJSON object
+    filteredData.forEach(document => {
+        var data =  {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [document.longitude, document.latitude]
+            },
+            "properties": {
+                "title": document.name,
+                "room_type": document.room_type,
+                "price": document.price
             }
-        })
-        .catch(error => {
-            console.error('Error fetching data:', error);
-        });
+        };
+        dataArr.push(data);
+    });
 
+    // Add layer to the map
+    if (!map.getLayer(borough+"-layer")) {
+
+        const sourceName = borough + "Source"
+        map.addSource(sourceName, {
+        "type": "geojson",
+        "data": {
+            "type": "FeatureCollection",
+            "features": dataArr
+        }
+        });
+        map.addLayer({
+        "id": borough+"-layer",
+        "type": "symbol",
+        "source": sourceName,
+        "layout": {
+            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+            "text-offset": [0, 0.6],
+            "text-anchor": "top",
+            "icon-image": "star-15",
+            "icon-allow-overlap": true,
+            "visibility": "visible"
+        },
+        "paint":{
+            "icon-opacity": ["case", ["boolean", ["feature-state", "hover"], false], 0.5, 1.0]
+        }
+        });
+    }
+    else {
+        map.setLayoutProperty(borough+"-layer", "visibility", "visible");
+    }
+
+    // Add popups to each marker
+    map.on('click', borough + '-layer', function (e) {
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var title = e.features[0].properties.title;
+        var roomType = e.features[0].properties.room_type;
+        var price = e.features[0].properties.price;
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+          coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        new mapboxgl.Popup().on('open', function (pop) {
+        }).setLngLat(coordinates).setMaxWidth(500).setHTML(`<h4>${roomType}</h4> <hr> <h4>Price: $${price}</h4>`)
+        .addTo(map);
+  });
+};
+
+
+// Fetch data from your API endpoint
+function changeLayer(borough) {
+    fetch('http://127.0.0.1:5000/main')
+        .then(response => response.json())
+        .then(data => {
+            let parsedData = JSON.parse(data);
+
+            // Create layer for borough
+            buildLayer(parsedData, borough, map);
+        
+        });
+    };
 
 
     
@@ -210,19 +269,33 @@ const boroughBoxes = {   // Boxes for each borough
     
 
 // Function to change view to a different borough
-function changeBorough(borough) {
+function changeBorough(borough, first) {
+
+    // Select previous borough
+    let previousBorough = d3.select(".prev_value");
     
+    // Zoom to specified borough
     map.fitBounds(boroughBoxes[borough], {
         padding: {top: 10, bottom: 25, left: 15, right: 5}
     });
 
+    // Create plots
     buildCharts(borough);
     buildBar(borough);
+
+    // Render the correct layer
+    if (first != "First") {
+    map.setLayoutProperty(previousBorough.attr("value") + "-layer", "visibility", "none");
+    }
+    changeLayer(borough);
+
+    // Set current borough as previous borough
+    previousBorough.attr("value", borough);
 };
 
 // Run on page load
 function init() {
-    changeBorough("Manhattan");
+    changeBorough("Manhattan", "First");
 };
 
 init();

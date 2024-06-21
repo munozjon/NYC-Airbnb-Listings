@@ -14,7 +14,6 @@
 
 </head>
 
-
 <body>
 
   <!-- The div that holds our plots -->
@@ -29,11 +28,12 @@
       <div class="col-md-3">
         <div class="card bg-light">
           <h2>Borough:</h2>
-          <button onclick="changeBorough('Manhattan')">Manhattan</button>
-          <button onclick="changeBorough('Brooklyn')">Brooklyn</button>
-          <button onclick="changeBorough('Queens')">Queens</button>
-          <button onclick="changeBorough('Bronx')">Bronx</button>
-          <button onclick="changeBorough('Staten Island')">Staten Island</button>
+          <div class="prev_value" value="Manhattan"></div>
+          <button onclick="changeBorough('Manhattan', '')">Manhattan</button>
+          <button onclick="changeBorough('Brooklyn', '')">Brooklyn</button>
+          <button onclick="changeBorough('Queens', '')">Queens</button>
+          <button onclick="changeBorough('Bronx', '')">Bronx</button>
+          <button onclick="changeBorough('Staten Island', '')">Staten Island</button>
           </div>
         <br>
       </div>
