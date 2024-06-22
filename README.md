@@ -41,18 +41,20 @@ Through our analysis, we have discovered several intriguing insights:
 By providing these insights, we aim to contribute valuable information to the community and support more informed decision-making for all future renters involved.
 
 ## Instructions
-**Instructions for Operating the Page:**
+Instructions for Operating the Page:
 Once the page is opened, you can explore several interactive features by clicking on each of the borough buttons. Here’s what happens when you click on a borough:
-  - **Map Interaction:** The map will zoom in on the selected borough, and each individual listing will be marked with a pin.
-  - **Sidebar Information:** The sidebar will display summary statistics for the selected borough.
-  - **Charts Display:** Three charts will appear below the map, highlighting:
+  - Map Interaction: The map will zoom in on the selected borough, and each individual listing will be marked with a pin.
+  - Sidebar Information: The sidebar will display summary statistics for the selected borough.
+  - Charts Display: Three charts will appear below the map, highlighting:
       - "% of Rooms by Type"
       - "Average Prices by Borough"
       - "Popular Neighborhood Amenities"
 
 The map offers additional features for an enhanced experience:
-  - **Marker Information:** Clicking on a marker will bring up a popup with details about the room type and price for that listing.
-  - **Directions:** In the upper left corner of the map, you can access the directions feature. You can either type in a start point and endpoint or click directly on the map to set them. This feature also      allows you to choose your mode of transportation.
+  - Marker Information: Clicking on a marker will bring up a popup with details about the room type and price for that listing.
+  - Directions: In the upper left corner of the map, you can access the directions feature. You can either type in a start point and endpoint or click directly on the map to set them. This feature also      
+    allows you to choose your mode of transportation.
+
 
 
 As part of this project, we have taken several steps to address ethical considerations:
