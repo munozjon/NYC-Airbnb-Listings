@@ -26,11 +26,17 @@
                 <button onclick="changeBorough('Queens', '')">Queens</button>
                 <button onclick="changeBorough('Bronx', '')">Bronx</button>
                 <button onclick="changeBorough('Staten Island', '')">Staten Island</button>
+                <div class="card card-primary small-box">
+                    <div class="card-header">
+                      <h3 class="card-title">Summary Stats</h3>
+                    </div>
+                    <div id="stats" class="card-body"></div>
+                  </div>
             </div>
         </div>
-
+            
         <!-- The div that holds the map -->
-        <div id="map"></div>
+     <div id="map"></div>
     </div>
 
     <!-- The div that holds our plots -->
@@ -38,15 +44,9 @@
         <div class="row">
             <div class="col-md-12">
 
-
                 <div id="pie"></div>
             </div>
             <br>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="scatter"></div>
-            </div>
             <br>
         </div>
         <div class="row">
