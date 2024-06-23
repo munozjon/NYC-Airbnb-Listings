@@ -55,3 +55,9 @@ button, select {
 button:hover, select:hover {
     background-color: #e2e6ea;
 }
+
+.mapboxgl-popup-close-button {
+    /* Adjust the selector as per your actual close button class or ID */
+    outline: none; /* Remove the default outline */
+    border: none; /* Remove any border */
+}
