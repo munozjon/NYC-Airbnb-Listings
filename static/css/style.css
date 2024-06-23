@@ -1,44 +1,48 @@
 body {
     margin: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
     font-family: Arial, sans-serif;
     background-color: #f8f9fa;
 }
 
 .main-container {
     display: flex;
-    height: 80%;
+    height: 100vh; 
+    overflow: hidden; 
 }
 
 #sidebar {
     width: 25%;
-    background-color:  #F8F9FA;
+    background-color: #F8F9FA;
     padding: 20px;
     box-sizing: border-box;
-    overflow-y: auto;
-    border-right: 1px solid #dee2e6; 
+    overflow-y: auto; 
+    border-right: 1px solid #dee2e6;
 }
 
 #map {
-    width: 75%;
-    height: 100%;
-    flex: 1;
+    flex: 1; /* Take up remaining space */
+    overflow-y: auto; /* Enable scrolling if content exceeds map height */
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-#graphs { 
-overflow-y:auto;
-height: 50%;
-background-color: #fff; /* White background */
-padding: 20px;
-box-sizing: border-box;
-border-top: 1px solid #dee2e6;
+#graphs {
+    background-color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
+    border-top: 1px solid #dee2e6;
+    margin-top: 20px; /* Add space between map and graphs */
+    overflow-y: auto; /* Enable scrolling if content exceeds graphs height */
+}
+
+.graph-section {
+    margin-bottom: 20px; 
+    padding-bottom: 20px; 
+    border-bottom: 1px solid #ced4da;
 }
 
 button, select {
-    width: 100%;
+    width: calc(100% - 22px); /* Adjust width to account for padding and border */
     padding: 10px;
     margin-bottom: 10px;
     border: 1px solid #ced4da;
