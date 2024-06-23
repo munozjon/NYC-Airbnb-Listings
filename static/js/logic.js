@@ -46,7 +46,6 @@ function buildCharts(borough) {
             margin: { "t": 50, "b": 0, "l": 0, "r": 0 }
         };
 
-
         var config = { responsive: true };
 
         Plotly.newPlot('pie', trace1, layout, config);
@@ -61,7 +60,6 @@ function buildCharts(borough) {
         }, {})
 
         console.log(boxPlotData)
-
 
         // Initiate chart data
 
@@ -94,7 +92,6 @@ function buildCharts(borough) {
 
         Plotly.newPlot('box', all_data, priceLayout);
 
-
         //Get the summary stats: 
 
         let entire_home = filteredData.filter(item => item["Room Type"] == "Entire home/apt");
@@ -119,7 +116,6 @@ function buildCharts(borough) {
 
     
 ;
-
 
  })}
 
@@ -150,7 +146,6 @@ function buildBar(borough){
         }
         );
 
-
         const neighbourhoods = Object.keys(neighbourhoodCounts)
 
         //setting up an array to iterate and create traces for each amenity
@@ -177,10 +172,8 @@ function buildBar(borough){
 
         Plotly.newPlot('bar', traces, layout, barConfig);
 
-
     })
     ;
-
 
 }
 // Initialize the map
@@ -196,7 +189,6 @@ const map = new mapboxgl.Map({
 // Add map controls
 map.addControl(new mapboxgl.NavigationControl());
 map.scrollZoom.disable();
-
 
 map.on('style.load', () => {
     map.setFog({}); // Set the default atmosphere style
@@ -248,6 +240,17 @@ map.on('style.load', () => {
     });
 
 });
+
+// Declare global variables
+let activePopup = null;
+
+// Function to close the active popup
+function closePopup() {
+    if (activePopup) {
+        activePopup.remove();
+        activePopup = null;
+    }
+}
 
 // Add markers for each borough
 function buildLayer(data, borough, map) {
@@ -304,7 +307,9 @@ function buildLayer(data, borough, map) {
     }
 
     // Add popups to each marker
-    map.on('click', borough + '-layer', function (e) {
+    map.on('mouseenter', borough + '-layer', function (e) {
+        closePopup();
+
         var coordinates = e.features[0].geometry.coordinates.slice();
         var title = e.features[0].properties.title;
         var roomType = e.features[0].properties.room_type;
@@ -312,15 +317,17 @@ function buildLayer(data, borough, map) {
         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
         }
-        new mapboxgl.Popup().on('open', function (pop) {
-        }).setLngLat(coordinates).setMaxWidth(500).setHTML(`<h4>${roomType}</h4> <hr> <h4>Price: $${price}</h4>`)
+        activePopup = new mapboxgl.Popup()
+            .setLngLat(coordinates)
+            .setMaxWidth(500)
+            .setHTML(`<h4>${roomType}</h4> <hr> <h4>Price: $${price}</h4>`)
             .addTo(map);
-    });
-};
-
+        });
+    };
 
 // Fetch data from your API endpoint
 function changeLayer(borough) {
+    closePopup();
     fetch('http://127.0.0.1:5000/main')
         .then(response => response.json())
         .then(data => {
@@ -333,7 +340,6 @@ function changeLayer(borough) {
 };
 
 
-
 const boroughBoxes = {   // Boxes for each borough
     'Manhattan': [[-74.0479, 40.6829], [-73.9067, 40.8820]],
     'Brooklyn': [[-74.0419, 40.5707], [-73.8567, 40.7394]],
@@ -341,7 +347,6 @@ const boroughBoxes = {   // Boxes for each borough
     'Bronx': [[-73.9339, 40.7855], [-73.7654, 40.9153]],
     'Staten Island': [[-74.2558, 40.4960], [-74.0522, 40.6490]]
 };
-
 
 // Function to change view to a different borough
 function changeBorough(borough, first) {
@@ -381,3 +386,4 @@ map.addControl(
 );
 
 init();
+
