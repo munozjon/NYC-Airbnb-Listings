@@ -53,7 +53,7 @@ Once the page is opened, you can explore several interactive features by clickin
 The map offers additional features for an enhanced experience:
   - Marker Information: Clicking on a marker will bring up a popup with details about the room type and price for that listing.
   - Directions: In the upper left corner of the map, you can access the directions feature. You can either type in a start point and endpoint or click directly on the map to set them. This feature also      
-    allows you to choose your mode of transportation.
+ allows you to choose your mode of transportation.
 
 
 
