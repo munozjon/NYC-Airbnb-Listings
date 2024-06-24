@@ -92,49 +92,22 @@ function buildCharts(borough) {
 
         Plotly.newPlot('box', all_data, priceLayout);
 
-        //Get the summary stats: 
-
-        let entire_home = filteredData.filter(item => item["Room Type"] == "Entire home/apt");
-
-        let maxPrice = d3.max(entire_home, function (d) {
-            return d["Average Price"];
-        });
-
-        let minPrice = d3.min(entire_home, function (d) {
-            return d["Average Price"];
-        });
-
-        let medPrice = d3.median(entire_home, function (d) {
-            return d["Average Price"];
-        });
-
-        let statsTab = d3.select("#stats");
-        statsTab.html("");
-        statsTab.append("h5").text(`Max Price: ${maxPrice.toFixed(2)}`)
-        statsTab.append("h5").text(`Med Price: ${medPrice.toFixed(2)}`);
-        statsTab.append("h5").text(`Min Price: ${minPrice.toFixed(2)}`);
-
+    // Populate dropdown with unique neighborhood names
+    let nbhds = [...new Set(filteredData.map(d => d.Neighbourhood))];
+    populateNeighborhoods(nbhds);
     
-;
+    });
+}
 
- })}
-
-// Create bar graph
-function buildBar(borough){
+function buildBar(borough) {
     d3.json("http://127.0.0.1:5000/amenities").then((data) => {
-
         let parsedAmData = JSON.parse(data);
-
-        //Filter data for chosen borough:
         let filteredAmData = parsedAmData.filter(results => results.Borough == borough);
-
         const neighbourhoodCounts = {};
-
         filteredAmData.forEach(document => {
             const neighbourhood = document["Neighbourhood"];
             const amenity = document["amenities"];
             const count = document["count"];
-            //
             if (!neighbourhoodCounts[neighbourhood]) {
                 neighbourhoodCounts[neighbourhood] = {};
             }
@@ -143,19 +116,14 @@ function buildBar(borough){
             } else {
                 neighbourhoodCounts[neighbourhood][amenity] = count;
             }
-        }
-        );
+        });
 
-        const neighbourhoods = Object.keys(neighbourhoodCounts)
-
-        //setting up an array to iterate and create traces for each amenity
-        // ...new Set removes duplicates from the array (Set does not contain duplicates) and consolidate amenity numbers
+        const neighbourhoods = Object.keys(neighbourhoodCounts);
         const amenities = [...new Set(filteredAmData.map(item => item.amenities))];
 
         const traces = amenities.map(amenity => {
             return {
                 x: neighbourhoods,
-                //incase of 0 values for amenity counts
                 y: neighbourhoods.map(neighbourhood => neighbourhoodCounts[neighbourhood][amenity] || 0),
                 name: amenity,
                 type: 'bar'
@@ -171,11 +139,85 @@ function buildBar(borough){
         const barConfig = { responsive: true };
 
         Plotly.newPlot('bar', traces, layout, barConfig);
-
-    })
-    ;
-
+    });
 }
+
+// Function to display summary statistics for the selected neighborhood
+
+function displaySummaryStats(nbhd) {
+    d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
+        let parsedData = JSON.parse(data);
+        let filteredData = parsedData.filter(results => results.Neighbourhood === nbhd);
+
+        const avgPrices = {
+            "Entire home/apt": 0,
+            "Hotel room": 0,
+            "Private room": 0,
+            "Shared room": 0
+        };
+
+        const roomTypeCounts = {
+            "Entire home/apt": 0,
+            "Hotel room": 0,
+            "Private room": 0,
+            "Shared room": 0
+        };
+
+        filteredData.forEach(result => {
+            const roomType = result["Room Type"];
+            const avgPrice = result["Average Price"];
+            avgPrices[roomType] += avgPrice;
+
+            if (!isNaN(avgPrice)){ 
+                avgPrices[roomType] += avgPrice;
+                roomTypeCounts[roomType] += 1;
+            }
+            roomTypeCounts[roomType] += 1;
+        });
+
+        const panel = d3.select("#summary-stats");
+        panel.html("");
+
+        Object.entries(avgPrices).forEach(([roomType, totalAvgPrice]) => {
+            const count = roomTypeCounts[roomType];
+            const avgPrice = totalAvgPrice / count;
+            panel.append("p").text(`${roomType.toUpperCase()}: $${avgPrice.toFixed(2)}`);
+        });
+    });
+}
+
+// Define the optionChanged function
+function optionChanged(newNeighbourhood) {
+    displaySummaryStats(newNeighbourhood);
+}
+
+// Populate dropdown with unique neighborhood names
+function populateNeighborhoods(nbhds) {
+    let dropdown = d3.select("#selNeighborhood");
+    dropdown.html("");
+    nbhds.forEach(nbhd => {
+        dropdown.append("option").text(nbhd).property("value", nbhd);
+    });
+
+    // Attach the change event listener to the dropdown
+    dropdown.on("change", function() {
+        const newNeighbourhood = d3.select(this).property("value");
+        optionChanged(newNeighbourhood);
+    });
+}
+
+// Initialize the dropdown with neighborhoods
+function initializeDropdown(borough) {
+    d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
+        let parsedData = JSON.parse(data);
+        let filteredData = parsedData.filter(results => results.Borough == borough);
+
+        let nbhds = [...new Set(filteredData.map(d => d.Neighbourhood))];
+        populateNeighborhoods(nbhds);
+
+    });
+}
+
 // Initialize the map
 mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM2pkYnp0In0.HTQaiKsTNpDofxvQJwjvXg';
 const map = new mapboxgl.Map({

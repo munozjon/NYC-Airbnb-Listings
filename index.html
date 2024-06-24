@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>AirBnb NYC</title>
@@ -14,30 +15,29 @@
 </head>
 
 <body>
-    <div class="main-container">
-        <!-- The div that holds the sidebar -->
+<div class="main-container">
+    <!-- The div that holds the sidebar -->
         <div id="sidebar">
-            <div class="card bg-light">
-                <h2>Zoom to Borough</h2>
-                <p>Dataset from December 4, 2023</p>
-                <div class="prev_value" value="Manhattan"></div>
-                <button onclick="changeBorough('Manhattan', '')">Manhattan</button>
-                <button onclick="changeBorough('Brooklyn', '')">Brooklyn</button>
-                <button onclick="changeBorough('Queens', '')">Queens</button>
-                <button onclick="changeBorough('Bronx', '')">Bronx</button>
-                <button onclick="changeBorough('Staten Island', '')">Staten Island</button>
-                <div class="card card-primary small-box">
-                    <div class="card-header">
-                      <h3 class="card-title">Summary Stats</h3>
-                    </div>
-                    <div id="stats" class="card-body"></div>
-                  </div>
-            </div>
+        <div class="card bg-light">
+            <h2>Zoom to Borough</h2>
+            <p>Dataset from December 4, 2023</p>
+            <div class="prev_value" value="Manhattan"></div>
+            <button onclick="changeBorough('Manhattan', '')">Manhattan</button>
+            <button onclick="changeBorough('Brooklyn', '')">Brooklyn</button>
+            <button onclick="changeBorough('Queens', '')">Queens</button>
+            <button onclick="changeBorough('Bronx', '')">Bronx</button>
+            <button onclick="changeBorough('Staten Island', '')">Staten Island</button>
+            <div class="card card-primary small-box">
+                <div class="card-header">
+                  <h3 class="card-title">Averge Price by Neighborhood</h3>
+                </div>
+               <div><select id="selNeighborhood" onchange = "optionChanged(this.value)"></select></div><div id="summary-stats">    </div>
+              </div>
         </div>
-            
-        <!-- The div that holds the map -->
-     <div id="map"></div>
     </div>
+    <!-- The div that holds the map -->
+ <div id="map"></div>
+</div>
 
     <!-- The div that holds our plots -->
     <div id="graphs">
@@ -62,10 +62,14 @@
         </div>
     </div>
     <!-- Link to Mapbox API -->
-    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
-    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css" type="text/css">
+    <script
+        src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.js"></script>
+    <link rel="stylesheet"
+        href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.3.1/mapbox-gl-directions.css"
+        type="text/css">
 
     <!-- Our JavaScript file -->
     <script type="text/javascript" src="static/js/logic.js"></script>
 </body>
+
 </html>
