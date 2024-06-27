@@ -92,9 +92,6 @@ function buildCharts(borough) {
 
         Plotly.newPlot('box', all_data, priceLayout);
 
-    // Populate dropdown with unique neighborhood names
-    let nbhds = [...new Set(filteredData.map(d => d.Neighbourhood))];
-    populateNeighborhoods(nbhds);
     
     });
 }
@@ -142,8 +139,40 @@ function buildBar(borough) {
     });
 }
 
-// Function to display summary statistics for the selected neighborhood
+// Functions to display summary statistics for the selected neighborhood
 
+//Declare a global variable to initialize neighbourhood names: 
+
+let globalNbhds = []; 
+
+//Create function to initialize neighbourhoods: 
+function initializeNeighborhoods(borough) {
+    d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
+        let parsedData = JSON.parse(data);
+        let filteredData = parsedData.filter(results => results.Borough == borough);
+
+        globalNbhds = [...new Set(filteredData.map(d => d.Neighbourhood))];
+        populateNeighborhoods(globalNbhds);
+        
+//By default display summary statistics of first neighborhood      
+        if (globalNbhds.length > 0) {
+            displaySummaryStats(globalNbhds[0]);
+        ;
+}})}
+
+//Create function to append dropdown with neighbourhoods: 
+function populateNeighborhoods(neighborhoods) { 
+    let dropdown = d3.select("#selNeighborhood");
+    dropdown.html("");
+    neighborhoods.forEach(nbhd => {
+        dropdown.append("option").text(nbhd).property("value", nbhd);
+    });
+    dropdown.on("change", function() {
+        const newNeighbourhood = d3.select(this).property("value");
+        displaySummaryStats(newNeighbourhood);
+    });
+}
+//create function to append and display summary stats 
 function displaySummaryStats(nbhd) {
     d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
         let parsedData = JSON.parse(data);
@@ -186,37 +215,6 @@ function displaySummaryStats(nbhd) {
     });
 }
 
-// Define the optionChanged function
-function optionChanged(newNeighbourhood) {
-    displaySummaryStats(newNeighbourhood);
-}
-
-// Populate dropdown with unique neighborhood names
-function populateNeighborhoods(nbhds) {
-    let dropdown = d3.select("#selNeighborhood");
-    dropdown.html("");
-    nbhds.forEach(nbhd => {
-        dropdown.append("option").text(nbhd).property("value", nbhd);
-    });
-
-    // Attach the change event listener to the dropdown
-    dropdown.on("change", function() {
-        const newNeighbourhood = d3.select(this).property("value");
-        optionChanged(newNeighbourhood);
-    });
-}
-
-// Initialize the dropdown with neighborhoods
-function initializeDropdown(borough) {
-    d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
-        let parsedData = JSON.parse(data);
-        let filteredData = parsedData.filter(results => results.Borough == borough);
-
-        let nbhds = [...new Set(filteredData.map(d => d.Neighbourhood))];
-        populateNeighborhoods(nbhds);
-
-    });
-}
 
 // Initialize the map
 mapboxgl.accessToken = 'pk.eyJ1IjoiY21kdXJhbiIsImEiOiJjbHgxM2l1YTEwMjYxMmxwcnFoM2pkYnp0In0.HTQaiKsTNpDofxvQJwjvXg';
@@ -281,7 +279,19 @@ map.on('style.load', () => {
         }
     });
 
+    //Setting up appending and borough cycling for Avg price drop down:
+    const defaultBorough = 'Manhattan';
+    
+    initializeNeighborhoods(defaultBorough);
+   
+    d3.select("#selBorough").property("value", defaultBorough);
+
+    d3.select("#selBorough").on("change", function() {
+        const selectedBorough = d3.select(this).property("value");
+        initializeNeighborhoods(selectedBorough);
+    });
 });
+
 
 // Declare global variables
 let activePopup = null;
@@ -417,8 +427,10 @@ function changeBorough(borough, first) {
 
 // Run on page load
 function init() {
-    changeBorough("Manhattan", "First");
-};
+    changeBorough("Manhattan", "First")
+    initializeNeighborhoods(defaultBorough)
+    displaySummaryStats("Battery Park City")
+}
 
 map.addControl(
     new MapboxDirections({
