@@ -150,7 +150,8 @@ function initializeNeighborhoods(borough) {
     d3.json("http://127.0.0.1:5000/aggregates").then((data) => {
         let parsedData = JSON.parse(data);
         let filteredData = parsedData.filter(results => results.Borough == borough);
-
+        console.log("borough here")
+        console.log(filteredData)
         globalNbhds = [...new Set(filteredData.map(d => d.Neighbourhood))];
         populateNeighborhoods(globalNbhds);
         
@@ -280,11 +281,11 @@ map.on('style.load', () => {
     });
 
     //Setting up appending and borough cycling for Avg price drop down:
-    const defaultBorough = 'Manhattan';
+    // let defaultBorough = 'Manhattan';
     
-    initializeNeighborhoods(defaultBorough);
+    //initializeNeighborhoods(defaultBorough);
    
-    d3.select("#selBorough").property("value", defaultBorough);
+    d3.select("#selBorough").property("value", "Manhattan");
 
     d3.select("#selBorough").on("change", function() {
         const selectedBorough = d3.select(this).property("value");
@@ -423,12 +424,16 @@ function changeBorough(borough, first) {
 
     // Set current borough as previous borough
     previousBorough.attr("value", borough);
+    initializeNeighborhoods(borough)
 };
 
 // Run on page load
 function init() {
-    changeBorough("Manhattan", "First")
-    initializeNeighborhoods(defaultBorough)
+    //let selector = d3.select
+
+    let defaultBorough = "Manhattan"
+    changeBorough(defaultBorough, "First")
+    //initializeNeighborhoods(defaultBorough)
     displaySummaryStats("Battery Park City")
 }
 
@@ -438,6 +443,10 @@ map.addControl(
     }),
     'top-left'
 );
+
+// function optionChanged(newBorough){
+//     initializeNeighborhoods(newBorough)
+// }
 
 init();
 
